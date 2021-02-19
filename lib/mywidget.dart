@@ -18,16 +18,17 @@ class GitFluState extends State<GitFluWidget>{
     _loadData();
   }
 
-  //atividade assincrona // Async / Await
+  //Atividade assincrona // Async / Await
   _loadData() async {
     String url = "https://api.github.com/orgs/adobe/members";
     http.Response response = await http.get(url);
+
     // UI Thread
     setState(() {
       final membersJSON = jsonDecode(response.body);
 
       for (var member in membersJSON){
-        _members.add(Member(member["login"], member["avatar_url"]));
+        _members.add(Member(member["login"], member["avatar_url"], member["url"]));
       }
       print(_members);
     });
@@ -36,6 +37,7 @@ class GitFluState extends State<GitFluWidget>{
   Widget _buildRow(int position){
     return ListTile(
       title: Text("${_members[position].login}", style: _font),
+          subtitle: Text("${_members[position].url}"),
           leading: CircleAvatar(
         backgroundColor: Colors.green,
         backgroundImage: NetworkImage(_members[position].avatarUrl),
